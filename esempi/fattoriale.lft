@@ -1,0 +1,7 @@
+read(n);
+assign 1 to fact;
+while (> n 0) {
+    assign *(fact, n) to fact;
+    assign - n 1 to n
+};
+print(fact)

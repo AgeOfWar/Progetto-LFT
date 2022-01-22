@@ -109,17 +109,12 @@ public class Translator {
         match(Tag.ASSIGN);
         expr();
         match(Tag.TO, "expected 'to' after 'assign'");
-        List<String> to = idlist();
+        List<Integer> to = idlist();
         for (int i = 0; i < to.size(); i++) {
           if (i < to.size() - 1) {
             code.emit(OpCode.dup);
           }
-          int id_addr = st.lookupAddress(to.get(i));
-          if (id_addr == -1) {
-            id_addr = count;
-            st.insert(to.get(i), count++);
-          }
-          code.emit(OpCode.istore, id_addr);
+          code.emit(OpCode.istore, to.get(i));
         }
         break;
       case Tag.PRINT:
@@ -131,17 +126,11 @@ public class Translator {
       case Tag.READ:
         match(Tag.READ);
         match('(', "expected '(' after 'read'");
-        List<String> ids = idlist();
+        List<Integer> ids = idlist();
         match(')', "unclosed read '(");
-  
-        for (String id : ids) {
-          int id_addr = st.lookupAddress(id);
-          if (id_addr == -1) {
-            id_addr = count;
-            st.insert(id, count++);
-          }
+        for (int i = 0; i < ids.size(); i++) {
           code.emit(OpCode.invokestatic, 0);
-          code.emit(OpCode.istore, id_addr);
+          code.emit(OpCode.istore, ids.get(i));
         }
         break;
       case Tag.WHILE:
@@ -193,21 +182,31 @@ public class Translator {
     }
   }
   
-  private List<String> idlist() {
-    List<String> ids = new LinkedList<>();
+  private List<Integer> idlist() {
+    List<Integer> ids = new LinkedList<>();
     if (look.tag == Tag.ID) {
-      ids.add(((Word) look).lexeme);
+      int id_addr = st.lookupAddress(((Word) look).lexeme);
+      if (id_addr == -1) {
+        id_addr = count;
+        st.insert(((Word) look).lexeme, count++);
+      }
+      ids.add(id_addr);
     }
     match(Tag.ID, "expected identifier");
     idlistp(ids);
     return ids;
   }
   
-  private void idlistp(List<String> ids) {
+  private void idlistp(List<Integer> ids) {
     if (look.tag == ',') {
       match(',');
       if (look.tag == Tag.ID) {
-        ids.add(((Word) look).lexeme);
+        int id_addr = st.lookupAddress(((Word) look).lexeme);
+        if (id_addr == -1) {
+          id_addr = count;
+          st.insert(((Word) look).lexeme, count++);
+        }
+        ids.add(id_addr);
       }
       match(Tag.ID, "expected identifier");
       idlistp(ids);
