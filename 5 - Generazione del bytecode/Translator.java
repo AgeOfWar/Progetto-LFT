@@ -214,6 +214,7 @@ public class Translator {
   }
   
   private void bexpr(int label, boolean expected) {
+    // 5.2 & 5.3
     Token t = look;
     switch (t.tag) {
       case '!':
@@ -245,6 +246,7 @@ public class Translator {
         }
         break;
       default:
+    // 5.2 & 5.3
         match(Tag.RELOP, "expected boolean expression ('[<,<=,>,>=,==,<>] expr expr', '[&&,||] expr expr', '! expr')");
         expr();
         expr();
@@ -268,8 +270,10 @@ public class Translator {
             code.emit(expected ? OpCode.if_icmpge : OpCode.if_icmplt, label);
             break;
         }
+    // 5.2 & 5.3
         break;
     }
+    // 5.2 & 5.3
   }
   
   private void exprlistUnary(Instruction instruction) {
