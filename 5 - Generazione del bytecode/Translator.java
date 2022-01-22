@@ -178,7 +178,7 @@ public class Translator {
         match('}', "unclosed block '{");
         break;
       default:
-        error("statement expected (assign, print, read, while, if, block)");
+        error("statement expected (assign, print, read, while, if, { statements })");
     }
   }
   
