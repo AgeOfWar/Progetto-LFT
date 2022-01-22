@@ -4,8 +4,7 @@ public class Token {
   public String toString() {return "<" + tag + ">";}
   public String toSimpleString() {
     if (tag == Tag.EOF) return "EOF";
-    if (getClass() == Token.class) return Character.toString((char)tag);
-    return ((Word)this).lexeme;
+    return Character.toString((char) tag);
   }
   public static final Token
       not = new Token('!'),

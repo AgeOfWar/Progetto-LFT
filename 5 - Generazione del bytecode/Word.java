@@ -2,6 +2,7 @@ public class Word extends Token {
   public String lexeme = "";
   public Word(int tag, String s) { super(tag); lexeme=s; }
   public String toString() { return "<" + tag + ", " + lexeme + ">"; }
+  public String toSimpleString() { return lexeme; }
   public static final Word
       assign = new Word(Tag.ASSIGN, "assign"),
       to = new Word(Tag.TO, "to"),

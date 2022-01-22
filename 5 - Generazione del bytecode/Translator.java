@@ -46,49 +46,6 @@ public class Translator {
     }
   }
   
-  private void expr() {
-    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
-    //  error("expr");
-    //}
-
-    switch (look.tag) {
-      case Tag.NUM:
-        code.emit(OpCode.ldc, ((NumberTok) look).value);
-        match(Tag.NUM);
-        break;
-      case Tag.ID:
-        code.emit(OpCode.iload, st.lookupAddress(((Word) look).lexeme));
-        match(Tag.ID);
-        break;
-      case '+':
-        match('+');
-        match('(', "'(' expected after '+'");
-        exprlistBinary(new Instruction(OpCode.iadd));
-        match(')', "unclosed sum");
-        break;
-      case '*':
-        match('*');
-        match('(', "'(' expected after '*'");
-        exprlistBinary(new Instruction(OpCode.imul));
-        match(')', "unclosed product");
-        break;
-      case '-':
-        match('-');
-        expr();
-        expr();
-        code.emit(OpCode.isub);
-        break;
-      case '/':
-        match('/');
-        expr();
-        expr();
-        code.emit(OpCode.idiv);
-        break;
-      default:
-        error("expression expected (constant, variable, '+ expr expr', '* expr expr', '- expr expr', '/ expr expr')");
-    }
-  }
-  
   private void prog() {
     //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
     //  error("program");
@@ -306,6 +263,49 @@ public class Translator {
         break;
     }
     // 5.2 & 5.3
+  }
+
+  private void expr() {
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+    //  error("expr");
+    //}
+
+    switch (look.tag) {
+      case Tag.NUM:
+        code.emit(OpCode.ldc, ((NumberTok) look).value);
+        match(Tag.NUM);
+        break;
+      case Tag.ID:
+        code.emit(OpCode.iload, st.lookupAddress(((Word) look).lexeme));
+        match(Tag.ID);
+        break;
+      case '+':
+        match('+');
+        match('(', "'(' expected after '+'");
+        exprlistBinary(new Instruction(OpCode.iadd));
+        match(')', "unclosed sum");
+        break;
+      case '*':
+        match('*');
+        match('(', "'(' expected after '*'");
+        exprlistBinary(new Instruction(OpCode.imul));
+        match(')', "unclosed product");
+        break;
+      case '-':
+        match('-');
+        expr();
+        expr();
+        code.emit(OpCode.isub);
+        break;
+      case '/':
+        match('/');
+        expr();
+        expr();
+        code.emit(OpCode.idiv);
+        break;
+      default:
+        error("expression expected (constant, variable, '+ expr expr', '* expr expr', '- expr expr', '/ expr expr')");
+    }
   }
   
   private void exprlistUnary(Instruction instruction) {
