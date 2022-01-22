@@ -7,4 +7,5 @@ public class NumberTok extends Token {
   }
   
   public String toString() { return "<" + tag + ", " + value + ">"; }
+  public String toSimpleString() { return Integer.toString(value); }
 }
