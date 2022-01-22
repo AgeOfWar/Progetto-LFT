@@ -214,8 +214,8 @@ public class Translator {
   }
   
   private void bexpr(int label, boolean expected) {
-    // 5.2 & 5.3
     Token t = look;
+    // 5.2 & 5.3
     switch (t.tag) {
       case '!':
         match('!');
