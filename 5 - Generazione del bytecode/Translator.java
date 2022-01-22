@@ -223,22 +223,22 @@ public class Translator {
         break;
       case Tag.AND:
         match(Tag.AND);
-        if (expected) {
+        if (expected) { // AND
           int andEndLabel = code.newLabel();
           bexpr(andEndLabel, false);
           bexpr(label, true);
           code.emitLabel(andEndLabel);
-        } else {
+        } else { // NAND
           bexpr(label, false);
           bexpr(label, false);
         }
         break;
       case Tag.OR:
         match(Tag.OR);
-        if (expected) {
+        if (expected) { // OR
           bexpr(label, true);
           bexpr(label, true);
-        } else {
+        } else { // NOR
           int orEndLabel = code.newLabel();
           bexpr(orEndLabel, true);
           bexpr(label, false);
