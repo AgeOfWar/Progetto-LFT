@@ -47,6 +47,10 @@ public class Translator {
   }
   
   private void expr() {
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+    //  error("expr");
+    //}
+
     switch (look.tag) {
       case Tag.NUM:
         code.emit(OpCode.ldc, ((NumberTok) look).value);
@@ -86,16 +90,28 @@ public class Translator {
   }
   
   private void prog() {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
+    //  error("program");
+    //}
+
     statlist();
     match(Tag.EOF, "expected end of file");
   }
   
   private void statlist() {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
+    //  error("statlist");
+    //}
+
     stat();
     statlistp();
   }
   
   private void statlistp() {
+    //if (look.tag != ';' && loSok.tag == '}' && look.tag != Tag.EOF) {
+    //  error("statlistp");
+    //}
+
     if (look.tag == ';') {
       match(';');
       stat();
@@ -104,6 +120,10 @@ public class Translator {
   }
   
   private void stat() {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag != '{' ) {
+    //  error("stat");
+    //}
+
     switch (look.tag) {
       case Tag.ASSIGN:
         match(Tag.ASSIGN);
@@ -183,6 +203,10 @@ public class Translator {
   }
   
   private List<Integer> idlist() {
+    //if (look.tag != Tag.ID) {
+    //  error("idlist");
+    //}
+
     List<Integer> ids = new LinkedList<>();
     if (look.tag == Tag.ID) {
       int id_addr = st.lookupAddress(((Word) look).lexeme);
@@ -198,6 +222,10 @@ public class Translator {
   }
   
   private void idlistp(List<Integer> ids) {
+    //if (look.tag != ',' && look.tag != ';' && look.tag != Tag.END && look.tag != Tag.ELSE && look.tag != Tag.EOF && look.tag != '}' && look.tag != ')') {
+    //  error("idlistp");
+    //}
+
     if (look.tag == ',') {
       match(',');
       if (look.tag == Tag.ID) {
@@ -214,6 +242,10 @@ public class Translator {
   }
   
   private void bexpr(int label, boolean expected) {
+    //if (look.tag != Tag.RELOP && look.tag != '!' && look.tag != Tag.AND && look.tag != Tag.OR) {
+    //  error("bexpr");
+    //}
+
     Token t = look;
     // 5.2 & 5.3
     switch (t.tag) {
@@ -277,17 +309,29 @@ public class Translator {
   }
   
   private void exprlistUnary(Instruction instruction) {
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+    //  error("expr");
+    //}
+
     expr();
     code.emit(instruction);
     exprlistp(instruction);
   }
   
   private void exprlistBinary(Instruction instruction) {
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+    //  error("expr");
+    //}
+
     expr();
     exprlistp(instruction);
   }
   
   private void exprlistp(Instruction instruction) {
+    //if (look.tag != ',' && look.tag != ')') {
+    //  error("exprlistp");
+    //}
+
     if (look.tag == ',') {
       match(',');
       expr();
