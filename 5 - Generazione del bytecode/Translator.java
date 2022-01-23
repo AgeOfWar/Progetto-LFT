@@ -97,7 +97,7 @@ public class Translator {
       case Tag.PRINT:
         match(Tag.PRINT);
         match('(', "expected '(' after 'print'");
-        exprlistUnary(new Instruction(OpCode.invokestatic, 1));
+        exprlist(new Instruction(OpCode.invokestatic, 1), false);
         match(')', "unclosed print '(");
         break;
       case Tag.READ:
@@ -282,13 +282,13 @@ public class Translator {
       case '+':
         match('+');
         match('(', "'(' expected after '+'");
-        exprlistBinary(new Instruction(OpCode.iadd));
+        exprlist(new Instruction(OpCode.iadd), true);
         match(')', "unclosed sum");
         break;
       case '*':
         match('*');
         match('(', "'(' expected after '*'");
-        exprlistBinary(new Instruction(OpCode.imul));
+        exprlist(new Instruction(OpCode.imul), true);
         match(')', "unclosed product");
         break;
       case '-':
@@ -308,22 +308,13 @@ public class Translator {
     }
   }
   
-  private void exprlistUnary(Instruction instruction) {
+  private void exprlist(Instruction instruction, boolean binary) {
     //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
     //  error("expr");
     //}
 
     expr();
-    code.emit(instruction);
-    exprlistp(instruction);
-  }
-  
-  private void exprlistBinary(Instruction instruction) {
-    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
-    //  error("expr");
-    //}
-
-    expr();
+    if (!binary) code.emit(instruction);
     exprlistp(instruction);
   }
   
