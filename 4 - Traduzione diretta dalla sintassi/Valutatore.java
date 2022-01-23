@@ -27,16 +27,28 @@ public class Valutatore {
   }
   
   public void start() {
+    //if (look.tag != Tag.NUM && look.tag != '(') {
+    //  error("start");
+    //}
+
     int val = expr();
     match(Tag.EOF);
     System.out.println(val);
   }
   
   private int expr() {
+    //if (look.tag != Tag.NUM && look.tag != '(') {
+    //  error("start");
+    //}
+
     return exprp(term());
   }
   
   private int exprp(int val) {
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '(' && look.tag != Tag.EOF) {
+    //  error("start");
+    //}
+
     switch (look.tag) {
       case '+':
         match('+');
@@ -50,10 +62,18 @@ public class Valutatore {
   }
   
   private int term() {
+    //if (look.tag != Tag.NUM && look.tag != '(') {
+    //  error("start");
+    //}
+
     return termp(fact());
   }
   
   private int termp(int val) {
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != '(' && look.tag != Tag.EOF) {
+    //  error("start");
+    //}
+
     switch (look.tag) {
       case '*':
         match('*');
@@ -67,6 +87,10 @@ public class Valutatore {
   }
   
   private int fact() {
+    //if (look.tag != Tag.NUM && look.tag != '(') {
+    //  error("start");
+    //}
+
     int val = 0;
     switch (look.tag) {
       case Tag.NUM:
