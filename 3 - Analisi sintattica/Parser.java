@@ -32,9 +32,14 @@ public class Parser {
   
   public void start() {
     // 3.1
+    // if (look.tag != Tag.NUM && look.tag != '(') {
+    //   error("start");
+    // }
+
     // expr();
     // match(Tag.EOF);
     // 3.1
+
     // 3.2
     prog();
     // 3.2
@@ -42,10 +47,19 @@ public class Parser {
   
   private void expr() {
     // 3.1
+    // if (look.tag != Tag.NUM && look.tag != '(') {
+    //   error("start");
+    // }
+
     // term();
     // exprp();
     // 3.1
+
     // 3.2
+    // if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+    //   error("expr");
+    // }
+
     switch (look.tag) {
       case Tag.NUM:
         match(Tag.NUM);
@@ -83,6 +97,10 @@ public class Parser {
   
   private void exprp() {
     // 3.1
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '(' && look.tag != Tag.EOF) {
+    //  error("start");
+    //}
+
     switch (look.tag) {
       case '+':
         match('+');
@@ -100,6 +118,10 @@ public class Parser {
   
   private void term() {
     // 3.1
+    //if (look.tag != Tag.NUM && look.tag != '(') {
+    //  error("start");
+    //}
+
     fact();
     termp();
     // 3.1
@@ -107,6 +129,10 @@ public class Parser {
   
   private void termp() {
     // 3.1
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != '(' && look.tag != Tag.EOF) {
+    //  error("start");
+    //}
+
     switch (look.tag) {
       case '*':
         match('*');
@@ -124,6 +150,10 @@ public class Parser {
   
   private void fact() {
     // 3.1
+    //if (look.tag != Tag.NUM && look.tag != '(') {
+    //  error("start");
+    //}
+
     switch (look.tag) {
       case Tag.NUM:
         match(Tag.NUM);
@@ -141,16 +171,28 @@ public class Parser {
   
   // 3.2
   private void prog() {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
+    //  error("program");
+    //}
+
     statlist();
     match(Tag.EOF, "expected end of file");
   }
   
   private void statlist() {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
+    //  error("statlist");
+    //}
+
     stat();
     statlistp();
   }
   
   private void statlistp() {
+    //if (look.tag != ';' && loSok.tag == '}' && look.tag != Tag.EOF) {
+    //  error("statlistp");
+    //}
+
     if (look.tag == ';') {
       match(';');
       stat();
@@ -159,6 +201,10 @@ public class Parser {
   }
   
   private void stat() {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag != '{' ) {
+    //  error("stat");
+    //}
+
     switch (look.tag) {
       case Tag.ASSIGN:
         match(Tag.ASSIGN);
@@ -215,11 +261,19 @@ public class Parser {
   }
   
   private void idlist() {
+    //if (look.tag != Tag.ID) {
+    //  error("idlist");
+    //}
+
     match(Tag.ID, "expected identifier");
     idlistp();
   }
   
   private void idlistp() {
+    //if (look.tag != ',' && look.tag != ';' && look.tag != Tag.END && look.tag != Tag.ELSE && look.tag != Tag.EOF && look.tag != '}' && look.tag != ')') {
+    //  error("idlistp");
+    //}
+
     if (look.tag == ',') {
       match(',');
       match(Tag.ID, "expected identifier");
@@ -228,17 +282,29 @@ public class Parser {
   }
   
   private void bexpr() {
+    //if (look.tag != Tag.RELOP && look.tag != '!' && look.tag != Tag.AND && look.tag != Tag.OR) {
+    //  error("bexpr");
+    //}
+
     match(Tag.RELOP, "expected boolean expression ('< expr expr', '<= expr expr', '> expr expr', '>= expr expr', '== expr expr', '<> expr expr')");
     expr();
     expr();
   }
   
   private void exprlist() {
+    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+    //  error("expr");
+    //}
+
     expr();
     exprlistp();
   }
   
   private void exprlistp() {
+    //if (look.tag != ',' && look.tag != ')') {
+    //  error("exprlistp");
+    //}
+
     if (look.tag == ',') {
       match(',');
       expr();
