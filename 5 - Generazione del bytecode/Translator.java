@@ -152,7 +152,7 @@ public class Translator {
       case '{':
         match('{');
         statlist();
-        match('}', "unclosed block '{");
+        match('}', "unclosed block '{'");
         break;
       default:
         error("statement expected (assign, print, read, while, if, { statements })");
