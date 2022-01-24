@@ -171,7 +171,7 @@ public class Parser {
   
   // 3.2
   private void prog() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{') {
     //  error("program");
     //}
 
@@ -180,7 +180,7 @@ public class Parser {
   }
   
   private void statlist() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{') {
     //  error("statlist");
     //}
 
@@ -201,7 +201,7 @@ public class Parser {
   }
   
   private void stat() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag != '{' ) {
+    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag != '{') {
     //  error("stat");
     //}
 
@@ -216,47 +216,55 @@ public class Parser {
         match(Tag.PRINT);
         match('(', "expected '(' after 'print'");
         exprlist();
-        match(')', "unclosed print '(");
+        match(')', "unclosed print '('");
         break;
       case Tag.READ:
         match(Tag.READ);
         match('(', "expected '(' after 'read'");
         idlist();
-        match(')', "unclosed read '(");
+        match(')', "unclosed read '('");
         break;
       case Tag.WHILE:
         match(Tag.WHILE);
         match('(', "expected '(' after 'while'");
         bexpr();
-        match(')', "unclosed while condition '(");
+        match(')', "unclosed while condition '('");
         stat();
         break;
       case Tag.IF:
         match(Tag.IF);
         match('(', "expected '(' after 'if'");
         bexpr();
-        match(')', "unclosed if condition '(");
+        match(')', "unclosed if condition '('");
         stat();
-        switch (look.tag) {
-          case Tag.END:
-            match(Tag.END);
-            break;
-          case Tag.ELSE:
-            match(Tag.ELSE);
-            stat();
-            match(Tag.END, "expected 'end' after 'else'");
-            break;
-          default:
-            error("expected 'end' or 'else' after 'if'");
-        }
+        statp();
         break;
       case '{':
         match('{');
         statlist();
-        match('}', "unclosed block '{");
+        match('}', "unclosed block '{'");
         break;
       default:
         error("statement expected (assign, print, read, while, if, block)");
+    }
+  }
+
+  private void statp() {
+    //if (look.tag != Tag.END && look.tag != Tag.ELSE) {
+    //  error("statp");
+    //}
+
+    switch (look.tag) {
+      case Tag.END:
+        match(Tag.END);
+        break;
+      case Tag.ELSE:
+        match(Tag.ELSE);
+        stat();
+        match(Tag.END, "expected 'end' after 'else'");
+        break;
+      default:
+        error("expected 'end' or 'else' after 'if'");
     }
   }
   

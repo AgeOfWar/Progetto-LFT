@@ -98,13 +98,13 @@ public class Translator {
         match(Tag.PRINT);
         match('(', "expected '(' after 'print'");
         exprlist(new Instruction(OpCode.invokestatic, 1), false);
-        match(')', "unclosed print '(");
+        match(')', "unclosed print '('");
         break;
       case Tag.READ:
         match(Tag.READ);
         match('(', "expected '(' after 'read'");
         List<Integer> ids = idlist();
-        match(')', "unclosed read '(");
+        match(')', "unclosed read '('");
         for (int i = 0; i < ids.size(); i++) {
           code.emit(OpCode.invokestatic, 0);
           code.emit(OpCode.istore, ids.get(i));
@@ -124,30 +124,14 @@ public class Translator {
         code.emitLabel(whileEndLabel);
         break;
       case Tag.IF:
-        int elseLabel = code.newLabel();
+        int thenEndLabel = code.newLabel();
         
         match(Tag.IF);
         match('(', "expected '(' after 'if'");
-        bexpr(elseLabel, false);
+        bexpr(thenEndLabel, false);
         match(')', "unclosed if condition '('");
         stat();
-        switch (look.tag) {
-          case Tag.END:
-            code.emitLabel(elseLabel);
-            match(Tag.END);
-            break;
-          case Tag.ELSE:
-            int ifEndLabel = code.newLabel();
-            code.emit(OpCode.GOto, ifEndLabel);
-            code.emitLabel(elseLabel);
-            match(Tag.ELSE);
-            stat();
-            match(Tag.END, "expected 'end' after 'else'");
-            code.emitLabel(ifEndLabel);
-            break;
-          default:
-            error("expected 'end' or 'else' after 'if'");
-        }
+        statp(thenEndLabel);
         break;
       case '{':
         match('{');
@@ -156,6 +140,30 @@ public class Translator {
         break;
       default:
         error("statement expected (assign, print, read, while, if, { statements })");
+    }
+  }
+
+  private void statp(int thenEndLabel) {
+    //if (look.tag != Tag.END && look.tag != Tag.ELSE) {
+    //  error("statp");
+    //}
+
+    switch (look.tag) {
+      case Tag.END:
+        code.emitLabel(thenEndLabel);
+        match(Tag.END);
+        break;
+      case Tag.ELSE:
+        int ifEndLabel = code.newLabel();
+        code.emit(OpCode.GOto, ifEndLabel);
+        code.emitLabel(thenEndLabel);
+        match(Tag.ELSE);
+        stat();
+        match(Tag.END, "expected 'end' after 'else'");
+        code.emitLabel(ifEndLabel);
+        break;
+      default:
+        error("expected 'end' or 'else' after 'if'");
     }
   }
   
