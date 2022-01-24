@@ -129,7 +129,7 @@ public class Translator {
         match(Tag.IF);
         match('(', "expected '(' after 'if'");
         bexpr(elseLabel, false);
-        match(')', "unclosed if condition '(");
+        match(')', "unclosed if condition '('");
         stat();
         switch (look.tag) {
           case Tag.END:
