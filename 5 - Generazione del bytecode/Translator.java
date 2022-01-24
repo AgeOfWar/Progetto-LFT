@@ -23,7 +23,7 @@ public class Translator {
   }
   
   void error(String s) {
-    throw new Error("near line " + lex.line + ": " + s + ", found '" + look + "'");
+    throw new Error("near line " + lex.line + ": " + s + ", found " + look);
   }
   
   void match(int t) {
