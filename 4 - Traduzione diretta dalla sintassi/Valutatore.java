@@ -17,7 +17,7 @@ public class Valutatore {
   }
   
   void error(String s) {
-    throw new Error("near line " + lex.line + ": " + s + ", found '" + look + "'");
+    throw new Error("near line " + lex.line + ": " + s + ", found " + look);
   }
   
   void match(int t) {
@@ -27,9 +27,9 @@ public class Valutatore {
   }
   
   public void start() {
-    //if (look.tag != Tag.NUM && look.tag != '(') {
-    //  error("start");
-    //}
+    if (look.tag != Tag.NUM && look.tag != '(') {
+      error("expected number, '('");
+    }
 
     int val = expr();
     match(Tag.EOF);
@@ -37,16 +37,16 @@ public class Valutatore {
   }
   
   private int expr() {
-    //if (look.tag != Tag.NUM && look.tag != '(') {
-    //  error("start");
-    //}
+    if (look.tag != Tag.NUM && look.tag != '(') {
+      error("expected number, '('");
+    }
 
     return exprp(term());
   }
   
   private int exprp(int val) {
     //if (look.tag != '+' && look.tag != '-' && look.tag != '(' && look.tag != Tag.EOF) {
-    //  error("start");
+    //  error("expected '+', '-', '(', end of file");
     //}
 
     switch (look.tag) {
@@ -62,16 +62,16 @@ public class Valutatore {
   }
   
   private int term() {
-    //if (look.tag != Tag.NUM && look.tag != '(') {
-    //  error("start");
-    //}
+    if (look.tag != Tag.NUM && look.tag != '(') {
+      error("expected number, '('");
+    }
 
     return termp(fact());
   }
   
   private int termp(int val) {
     //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != '(' && look.tag != Tag.EOF) {
-    //  error("start");
+    //  error("expected '+', '-', '*', '/', '(', end of file");
     //}
 
     switch (look.tag) {
@@ -87,9 +87,9 @@ public class Valutatore {
   }
   
   private int fact() {
-    //if (look.tag != Tag.NUM && look.tag != '(') {
-    //  error("start");
-    //}
+    if (look.tag != Tag.NUM && look.tag != '(') {
+      error("expected number, '('");
+    }
 
     int val = 0;
     switch (look.tag) {

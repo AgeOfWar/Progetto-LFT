@@ -20,7 +20,7 @@ public class Tag {
       case 260:
         return "to";
       case 261:
-        return "id";
+        return "if";
       case 262:
         return "else";
       case 263:
