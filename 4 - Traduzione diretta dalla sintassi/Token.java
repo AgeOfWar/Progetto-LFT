@@ -1,12 +1,8 @@
 public class Token {
   public final int tag;
   public Token(int t) { tag = t;  }
-  public String toString() {return "<" + tag + ">";}
-  public String toSimpleString() {
-    if (tag == Tag.EOF) return "EOF";
-    if (getClass() == Token.class) return Character.toString((char)tag);
-    return ((Word)this).lexeme;
-  }
+  //public String toString() {return "<" + tag + ">";}
+  public String toString() {return "<" + Tag.toString(tag) + ">";}
   public static final Token
       not = new Token('!'),
       lpt = new Token('('),

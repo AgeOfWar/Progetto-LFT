@@ -1,7 +1,11 @@
 public class Word extends Token {
   public String lexeme = "";
   public Word(int tag, String s) { super(tag); lexeme=s; }
-  public String toString() { return "<" + tag + ", " + lexeme + ">"; }
+  //public String toString() { return "<" + tag + ", " + lexeme + ">"; }
+  public String toString() {
+    if (tag == Tag.ID) return "<" + Tag.toString(tag) + ", " + lexeme + ">";
+    return super.toString();
+  }
   public static final Word
       assign = new Word(Tag.ASSIGN, "assign"),
       to = new Word(Tag.TO, "to"),

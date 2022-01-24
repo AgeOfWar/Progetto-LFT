@@ -17,23 +17,19 @@ public class Parser {
   }
   
   void error(String s) {
-    throw new Error("near line " + lex.line + ": " + s + ", found '" + look.toSimpleString() + "'");
-  }
-  
-  void match(int t, String message) {
-    if (look.tag == t) {
-      if (look.tag != Tag.EOF) move();
-    } else error(message);
+    throw new Error("near line " + lex.line + ": " + s + ", found '" + look + "'");
   }
   
   void match(int t) {
-    match(t, "expected <" + t + ">");
+    if (look.tag == t) {
+      if (look.tag != Tag.EOF) move();
+    } else error("expected " + Tag.toString(t));
   }
   
   public void start() {
     // 3.1
     // if (look.tag != Tag.NUM && look.tag != '(') {
-    //   error("start");
+    //   error("expected number, '('");
     // }
 
     // expr();
@@ -48,7 +44,7 @@ public class Parser {
   private void expr() {
     // 3.1
     // if (look.tag != Tag.NUM && look.tag != '(') {
-    //   error("start");
+    //   error("expected number, '('");
     // }
 
     // term();
@@ -56,9 +52,9 @@ public class Parser {
     // 3.1
 
     // 3.2
-    // if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
-    //   error("expr");
-    // }
+    if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+      error("expected '+', '-', '*', '/', number, identifier");
+    }
 
     switch (look.tag) {
       case Tag.NUM:
@@ -69,15 +65,15 @@ public class Parser {
         break;
       case '+':
         match('+');
-        match('(', "'(' expected after '+'");
+        match('(');
         exprlist();
-        match(')', "unclosed sum");
+        match(')');
         break;
       case '*':
         match('*');
-        match('(', "'(' expected after '*'");
+        match('(');
         exprlist();
-        match(')', "unclosed product");
+        match(')');
         break;
       case '-':
         match('-');
@@ -89,8 +85,6 @@ public class Parser {
         expr();
         expr();
         break;
-      default:
-        error("expression expected (constant, variable, '+ expr expr', '* expr expr', '- expr expr', '/ expr expr')");
     }
     // 3.2
   }
@@ -98,7 +92,7 @@ public class Parser {
   private void exprp() {
     // 3.1
     //if (look.tag != '+' && look.tag != '-' && look.tag != '(' && look.tag != Tag.EOF) {
-    //  error("start");
+    //  error("expected '+', '-', '(', end of file");
     //}
 
     switch (look.tag) {
@@ -118,9 +112,9 @@ public class Parser {
   
   private void term() {
     // 3.1
-    //if (look.tag != Tag.NUM && look.tag != '(') {
-    //  error("start");
-    //}
+    if (look.tag != Tag.NUM && look.tag != '(') {
+      error("expected number, '('");
+    }
 
     fact();
     termp();
@@ -130,7 +124,7 @@ public class Parser {
   private void termp() {
     // 3.1
     //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != '(' && look.tag != Tag.EOF) {
-    //  error("start");
+    //  error("expected '+', '-', '*', '/', '(', end of file");
     //}
 
     switch (look.tag) {
@@ -150,9 +144,9 @@ public class Parser {
   
   private void fact() {
     // 3.1
-    //if (look.tag != Tag.NUM && look.tag != '(') {
-    //  error("start");
-    //}
+    if (look.tag != Tag.NUM && look.tag != '(') {
+      error("expected number, '('");
+    }
 
     switch (look.tag) {
       case Tag.NUM:
@@ -161,36 +155,34 @@ public class Parser {
       case '(':
         match('(');
         expr();
-        match(')', "unclosed '('");
+        match(')');
         break;
-      default:
-        error("factor expected (constant, '(expr)')");
     }
     // 3.1
   }
   
   // 3.2
   private void prog() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{') {
-    //  error("program");
-    //}
+    if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{') {
+      error("expected 'assign', 'print', 'read', 'if', 'while', '{'");
+    }
 
     statlist();
-    match(Tag.EOF, "expected end of file");
+    match(Tag.EOF);
   }
   
   private void statlist() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{') {
-    //  error("statlist");
-    //}
+    if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{') {
+      error("expected 'assign', 'print', 'read', 'if', 'while', '{'");
+    }
 
     stat();
     statlistp();
   }
   
   private void statlistp() {
-    //if (look.tag != ';' && loSok.tag == '}' && look.tag != Tag.EOF) {
-    //  error("statlistp");
+    //if (look.tag != ';' && look.tag == '}' && look.tag != Tag.EOF) {
+    //  error("expected ';', '}', end of file");
     //}
 
     if (look.tag == ';') {
@@ -201,58 +193,56 @@ public class Parser {
   }
   
   private void stat() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag != '{') {
-    //  error("stat");
-    //}
+    if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag != '{') {
+      error("expected 'assign', 'print', 'read', 'if', 'while', '{'");
+    }
 
     switch (look.tag) {
       case Tag.ASSIGN:
         match(Tag.ASSIGN);
         expr();
-        match(Tag.TO, "expected 'to' after 'assign'");
+        match(Tag.TO);
         idlist();
         break;
       case Tag.PRINT:
         match(Tag.PRINT);
-        match('(', "expected '(' after 'print'");
+        match('(');
         exprlist();
-        match(')', "unclosed print '('");
+        match(')');
         break;
       case Tag.READ:
         match(Tag.READ);
-        match('(', "expected '(' after 'read'");
+        match('(');
         idlist();
-        match(')', "unclosed read '('");
+        match(')');
         break;
       case Tag.WHILE:
         match(Tag.WHILE);
-        match('(', "expected '(' after 'while'");
+        match('(');
         bexpr();
-        match(')', "unclosed while condition '('");
+        match(')');
         stat();
         break;
       case Tag.IF:
         match(Tag.IF);
-        match('(', "expected '(' after 'if'");
+        match('(');
         bexpr();
-        match(')', "unclosed if condition '('");
+        match(')');
         stat();
         statp();
         break;
       case '{':
         match('{');
         statlist();
-        match('}', "unclosed block '{'");
+        match('}');
         break;
-      default:
-        error("statement expected (assign, print, read, while, if, block)");
     }
   }
 
   private void statp() {
-    //if (look.tag != Tag.END && look.tag != Tag.ELSE) {
-    //  error("statp");
-    //}
+    if (look.tag != Tag.END && look.tag != Tag.ELSE) {
+      error("expected 'end', 'else'");
+    }
 
     switch (look.tag) {
       case Tag.END:
@@ -261,48 +251,46 @@ public class Parser {
       case Tag.ELSE:
         match(Tag.ELSE);
         stat();
-        match(Tag.END, "expected 'end' after 'else'");
+        match(Tag.END);
         break;
-      default:
-        error("expected 'end' or 'else' after 'if'");
     }
   }
   
   private void idlist() {
-    //if (look.tag != Tag.ID) {
-    //  error("idlist");
-    //}
+    if (look.tag != Tag.ID) {
+      error("expected identifier");
+    }
 
-    match(Tag.ID, "expected identifier");
+    match(Tag.ID);
     idlistp();
   }
   
   private void idlistp() {
     //if (look.tag != ',' && look.tag != ';' && look.tag != Tag.END && look.tag != Tag.ELSE && look.tag != Tag.EOF && look.tag != '}' && look.tag != ')') {
-    //  error("idlistp");
+    //  error("expected ',', ';', 'end', 'else', '}', ')', end of file");
     //}
 
     if (look.tag == ',') {
       match(',');
-      match(Tag.ID, "expected identifier");
+      match(Tag.ID);
       idlistp();
     }
   }
   
   private void bexpr() {
-    //if (look.tag != Tag.RELOP && look.tag != '!' && look.tag != Tag.AND && look.tag != Tag.OR) {
-    //  error("bexpr");
-    //}
+    if (look.tag != Tag.RELOP && look.tag != '!' && look.tag != Tag.AND && look.tag != Tag.OR) {
+      error("expected '==', '<>', '<', '>', '<=', '>='");
+    }
 
-    match(Tag.RELOP, "expected boolean expression ('< expr expr', '<= expr expr', '> expr expr', '>= expr expr', '== expr expr', '<> expr expr')");
+    match(Tag.RELOP);
     expr();
     expr();
   }
   
   private void exprlist() {
-    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
-    //  error("expr");
-    //}
+    if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+      error("expected '+', '-', '*', '/', number, identifier");
+    }
 
     expr();
     exprlistp();
@@ -310,7 +298,7 @@ public class Parser {
   
   private void exprlistp() {
     //if (look.tag != ',' && look.tag != ')') {
-    //  error("exprlistp");
+    //  error("expected ',', ')'");
     //}
 
     if (look.tag == ',') {

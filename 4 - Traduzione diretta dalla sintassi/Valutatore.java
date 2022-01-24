@@ -17,13 +17,13 @@ public class Valutatore {
   }
   
   void error(String s) {
-    throw new Error("near line " + lex.line + ": " + s);
+    throw new Error("near line " + lex.line + ": " + s + ", found '" + look + "'");
   }
   
   void match(int t) {
     if (look.tag == t) {
       if (look.tag != Tag.EOF) move();
-    } else error("syntax error");
+    } else error("expected " + Tag.toString(t));
   }
   
   public void start() {

@@ -23,17 +23,13 @@ public class Translator {
   }
   
   void error(String s) {
-    throw new Error("near line " + lex.line + ": " + s + ", found '" + look.toSimpleString() + "'");
-  }
-  
-  void match(int t, String message) {
-    if (look.tag == t) {
-      if (look.tag != Tag.EOF) move();
-    } else error(message);
+    throw new Error("near line " + lex.line + ": " + s + ", found '" + look + "'");
   }
   
   void match(int t) {
-    match(t, "expected <" + t + ">");
+    if (look.tag == t) {
+      if (look.tag != Tag.EOF) move();
+    } else error("expected " + Tag.toString(t));
   }
   
   public void start() {
@@ -41,24 +37,24 @@ public class Translator {
     try {
       code.toJasmin();
     }
-    catch(java.io.IOException e) {
+    catch(IOException e) {
       System.out.println("IO error\n");
     }
   }
   
   private void prog() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
-    //  error("program");
-    //}
+    if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{') {
+      error("expected 'assign', 'print', 'read', 'if', 'while', '{'");
+    }
 
     statlist();
-    match(Tag.EOF, "expected end of file");
+    match(Tag.EOF);
   }
   
   private void statlist() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{' ) {
-    //  error("statlist");
-    //}
+    if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag == '{') {
+      error("expected 'assign', 'print', 'read', 'if', 'while', '{'");
+    }
 
     stat();
     statlistp();
@@ -66,7 +62,7 @@ public class Translator {
   
   private void statlistp() {
     //if (look.tag != ';' && loSok.tag == '}' && look.tag != Tag.EOF) {
-    //  error("statlistp");
+    //  error("expected ';', '}', end of file");
     //}
 
     if (look.tag == ';') {
@@ -77,15 +73,15 @@ public class Translator {
   }
   
   private void stat() {
-    //if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag != '{' ) {
-    //  error("stat");
-    //}
+    if (look.tag != Tag.ASSIGN && look.tag != Tag.PRINT && look.tag != Tag.READ && look.tag != Tag.WHILE && look.tag != Tag.IF && look.tag != '{') {
+      error("expected 'assign', 'print', 'read', 'if', 'while', '{'");
+    }
 
     switch (look.tag) {
       case Tag.ASSIGN:
         match(Tag.ASSIGN);
         expr();
-        match(Tag.TO, "expected 'to' after 'assign'");
+        match(Tag.TO);
         List<Integer> to = idlist();
         for (int i = 0; i < to.size(); i++) {
           if (i < to.size() - 1) {
@@ -96,15 +92,15 @@ public class Translator {
         break;
       case Tag.PRINT:
         match(Tag.PRINT);
-        match('(', "expected '(' after 'print'");
+        match('(');
         exprlist(new Instruction(OpCode.invokestatic, 1), false);
-        match(')', "unclosed print '('");
+        match(')');
         break;
       case Tag.READ:
         match(Tag.READ);
-        match('(', "expected '(' after 'read'");
+        match('(');
         List<Integer> ids = idlist();
-        match(')', "unclosed read '('");
+        match(')');
         for (int i = 0; i < ids.size(); i++) {
           code.emit(OpCode.invokestatic, 0);
           code.emit(OpCode.istore, ids.get(i));
@@ -115,10 +111,10 @@ public class Translator {
         int whileEndLabel = code.newLabel();
         
         match(Tag.WHILE);
-        match('(', "expected '(' after 'while'");
+        match('(');
         code.emitLabel(whileLabel);
         bexpr(whileEndLabel, false);
-        match(')', "unclosed while condition '(");
+        match(')');
         stat();
         code.emit(OpCode.GOto, whileLabel);
         code.emitLabel(whileEndLabel);
@@ -127,26 +123,24 @@ public class Translator {
         int thenEndLabel = code.newLabel();
         
         match(Tag.IF);
-        match('(', "expected '(' after 'if'");
+        match('(');
         bexpr(thenEndLabel, false);
-        match(')', "unclosed if condition '('");
+        match(')');
         stat();
         statp(thenEndLabel);
         break;
       case '{':
         match('{');
         statlist();
-        match('}', "unclosed block '{'");
+        match('}');
         break;
-      default:
-        error("statement expected (assign, print, read, while, if, { statements })");
     }
   }
 
   private void statp(int thenEndLabel) {
-    //if (look.tag != Tag.END && look.tag != Tag.ELSE) {
-    //  error("statp");
-    //}
+    if (look.tag != Tag.END && look.tag != Tag.ELSE) {
+      error("expected 'end', 'else'");
+    }
 
     switch (look.tag) {
       case Tag.END:
@@ -159,18 +153,16 @@ public class Translator {
         code.emitLabel(thenEndLabel);
         match(Tag.ELSE);
         stat();
-        match(Tag.END, "expected 'end' after 'else'");
+        match(Tag.END);
         code.emitLabel(ifEndLabel);
         break;
-      default:
-        error("expected 'end' or 'else' after 'if'");
     }
   }
   
   private List<Integer> idlist() {
-    //if (look.tag != Tag.ID) {
-    //  error("idlist");
-    //}
+    if (look.tag != Tag.ID) {
+      error("expected identifier");
+    }
 
     List<Integer> ids = new LinkedList<>();
     if (look.tag == Tag.ID) {
@@ -181,14 +173,14 @@ public class Translator {
       }
       ids.add(id_addr);
     }
-    match(Tag.ID, "expected identifier");
+    match(Tag.ID);
     idlistp(ids);
     return ids;
   }
   
   private void idlistp(List<Integer> ids) {
     //if (look.tag != ',' && look.tag != ';' && look.tag != Tag.END && look.tag != Tag.ELSE && look.tag != Tag.EOF && look.tag != '}' && look.tag != ')') {
-    //  error("idlistp");
+    //  error("expected ',', ';', 'end', 'else', '}', ')', end of file");
     //}
 
     if (look.tag == ',') {
@@ -201,15 +193,15 @@ public class Translator {
         }
         ids.add(id_addr);
       }
-      match(Tag.ID, "expected identifier");
+      match(Tag.ID);
       idlistp(ids);
     }
   }
   
   private void bexpr(int label, boolean expected) {
-    //if (look.tag != Tag.RELOP && look.tag != '!' && look.tag != Tag.AND && look.tag != Tag.OR) {
-    //  error("bexpr");
-    //}
+    if (look.tag != Tag.RELOP && look.tag != '!' && look.tag != Tag.AND && look.tag != Tag.OR) {
+      error("expected '==', '<>', '<', '>', '<=', '>=', '!', '&&', '||'");
+    }
 
     Token t = look;
     // 5.2 & 5.3
@@ -242,9 +234,9 @@ public class Translator {
           code.emitLabel(orEndLabel);
         }
         break;
-      default:
+      case Tag.RELOP:
     // 5.2 & 5.3
-        match(Tag.RELOP, "expected boolean expression ('[<,<=,>,>=,==,<>] expr expr', '[&&,||] expr expr', '! expr')");
+        match(Tag.RELOP);
         expr();
         expr();
         switch (((Word) t).lexeme) {
@@ -274,9 +266,9 @@ public class Translator {
   }
 
   private void expr() {
-    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
-    //  error("expr");
-    //}
+    if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+      error("expected '+', '-', '*', '/', number, identifier");
+    }
 
     switch (look.tag) {
       case Tag.NUM:
@@ -289,15 +281,15 @@ public class Translator {
         break;
       case '+':
         match('+');
-        match('(', "'(' expected after '+'");
+        match('(');
         exprlist(new Instruction(OpCode.iadd), true);
-        match(')', "unclosed sum");
+        match(')');
         break;
       case '*':
         match('*');
-        match('(', "'(' expected after '*'");
+        match('(');
         exprlist(new Instruction(OpCode.imul), true);
-        match(')', "unclosed product");
+        match(')');
         break;
       case '-':
         match('-');
@@ -311,15 +303,13 @@ public class Translator {
         expr();
         code.emit(OpCode.idiv);
         break;
-      default:
-        error("expression expected (constant, variable, '+ expr expr', '* expr expr', '- expr expr', '/ expr expr')");
     }
   }
   
   private void exprlist(Instruction instruction, boolean binary) {
-    //if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
-    //  error("expr");
-    //}
+    if (look.tag != '+' && look.tag != '-' && look.tag != '*' && look.tag != '/' && look.tag != Tag.NUM && look.tag != Tag.ID) {
+      error("expected '+', '-', '*', '/', number, identifier");
+    }
 
     expr();
     if (!binary) code.emit(instruction);
@@ -328,7 +318,7 @@ public class Translator {
   
   private void exprlistp(Instruction instruction) {
     //if (look.tag != ',' && look.tag != ')') {
-    //  error("exprlistp");
+    //  error("expected ',', ')'");
     //}
 
     if (look.tag == ',') {

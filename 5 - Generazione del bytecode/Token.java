@@ -1,11 +1,8 @@
 public class Token {
   public final int tag;
   public Token(int t) { tag = t;  }
-  public String toString() {return "<" + tag + ">";}
-  public String toSimpleString() {
-    if (tag == Tag.EOF) return "EOF";
-    return Character.toString((char) tag);
-  }
+  //public String toString() {return "<" + tag + ">";}
+  public String toString() {return "<" + Tag.toString(tag) + ">";}
   public static final Token
       not = new Token('!'),
       lpt = new Token('('),
