@@ -18,24 +18,24 @@ import static java.lang.Character.isDigit;
  * "-.7e2", "1e2.3"
  * Esempi di stringhe non accettate: ".", "e3", "123.", "+e6", "1.2.3", "4e5e6", "++3"
  */
-public class DFA8 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA8 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return isDigit(c) || isSign(c) || c == '.' || c == 'e';
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state == 2 || state == 4 || state == 7 || state == 9;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         return isSign(c) ? 1 : isDigit(c) ? 2 : c == '.' ? 3 : -1;

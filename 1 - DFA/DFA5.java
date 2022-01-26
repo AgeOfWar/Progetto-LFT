@@ -1,23 +1,23 @@
 import static java.lang.Character.*;
 
-public class DFA5 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA5 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return isLetter(c) || isDigit(c);
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state >= 5;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         return c >= 'A' && c <= 'K' ? 1 : c >= 'L' && c <= 'Z' ? 2 : -1;

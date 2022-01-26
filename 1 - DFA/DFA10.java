@@ -8,24 +8,24 @@
  * sequenza *&#47;.Le stringhe del linguaggio possono non avere nessuna occorrenza della sequenza
  * &#47;* (caso della sequenza di simboli senza commenti). Implementare l’automa seguendo la costruzione vista in Listing 1.
  */
-public class DFA10 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA10 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return c == '/' || c == '*' || c == 'a';
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state <= 1;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         return c == '/' ? 1 : 0;

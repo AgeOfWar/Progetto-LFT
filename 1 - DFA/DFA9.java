@@ -7,24 +7,24 @@
  * Esempi di stringhe accettate: "/****&#47;", "/*a*a*&#47;", "/*a/**&#47;", "/**a///a/a**&#47;", "/**&#47;", "/*&#47;*&#47;"
  * Esempi di stringhe non accettate: "/*&#47;", "/**&#47;***&#47;"
  */
-public class DFA9 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA9 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return c == '/' || c == '*' || c == 'a';
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state == 4;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         return c == '/' ? 1 : -1;

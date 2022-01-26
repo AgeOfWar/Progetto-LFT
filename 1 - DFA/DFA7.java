@@ -6,24 +6,24 @@
  * "caolo", "Pa%lo", "Paola" e "Parlo" (il nome dopo la sostituzione di un carattere), ma non
  * "Eva", "Perro", "Pietro" oppure "P*o*o".
  */
-public class DFA7 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA7 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return true;
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state == 9;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         return c == 'M' ? 1 : 5;

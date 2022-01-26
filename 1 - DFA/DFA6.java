@@ -13,24 +13,24 @@ import static java.lang.Character.*;
  * Esempi di stringhe non accettate: "123456Bianchi", "654321Rossi", "5", "654322", "Rossi",
  * "2Bianchi"
  */
-public class DFA6 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA6 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return isLetter(c) || isDigit(c);
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state == 7;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         switch (c) {

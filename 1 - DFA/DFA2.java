@@ -10,24 +10,24 @@ import static java.lang.Character.isLetter;
  * "x_", "_5"
  * Esempi di stringhe non accettate: "5", "221B", "123", "9_to_5", "___"
  */
-public class DFA2 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA2 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return isJavaIdentifierPart(c);
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state == 2;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         return c == '_' ? 1 : isLetter(c) ? 2 : -1;

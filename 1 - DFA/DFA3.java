@@ -14,24 +14,24 @@ import static java.lang.Character.*;
  * Quindi l’automa deve accettare le stringhe "2Bianchi" e "122B" ma non "654322" e "Rossi".
  * Assicurarsi che il DFA sia minimo.
  */
-public class DFA3 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA3 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return isLetter(c) || isDigit(c);
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state == 3;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         switch (c) {

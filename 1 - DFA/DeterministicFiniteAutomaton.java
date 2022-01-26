@@ -1,10 +1,10 @@
-public abstract class DeterministicFiniteAutomaton<S> {
+public abstract class DeterministicFiniteAutomaton {
   public abstract boolean isInAlphabet(char c);
-  public abstract S initialState();
-  public abstract boolean isFinalState(S state);
-  public abstract S transit(S state, char c);
+  public abstract int initialState();
+  public abstract boolean isFinalState(int state);
+  public abstract int transit(int state, char c);
   
-  public S transit(S state, String string) {
+  public int transit(int state, String string) {
     if (string.isEmpty()) { // δ^(q, ε) = q
       return state;
     }
@@ -21,46 +21,13 @@ public abstract class DeterministicFiniteAutomaton<S> {
     return isFinalState(transit(initialState(), string));
   }
   
-  public DeterministicFiniteAutomaton<S> negate() {
-    return new DeterministicFiniteAutomaton<S>() {
-      @Override
-      public boolean isInAlphabet(char c) {
-        return DeterministicFiniteAutomaton.this.isInAlphabet(c);
-      }
-  
-      @Override
-      public S initialState() {
-        return DeterministicFiniteAutomaton.this.initialState();
-      }
-  
-      @Override
-      public boolean isFinalState(S state) {
-        return !DeterministicFiniteAutomaton.this.isFinalState(state);
-      }
-  
-      @Override
-      public S transit(S state, char c) {
-        return DeterministicFiniteAutomaton.this.transit(state, c);
-      }
-    };
-  }
-  
-  public static void main(DeterministicFiniteAutomaton<?> dfa, String[] args) {
+  public static void main(DeterministicFiniteAutomaton dfa, String[] args) {
     if (args.length == 0) {
-      System.err.println("Usage: [-negate] <string> [strings...]");
+      System.err.println("Usage: <string> [strings...]");
       return;
     }
     
-    int stringsIndex = 0;
-    if (args[0].equals("-n") || args[0].equals("-negate") || args[0].equals("--negate")) {
-      dfa = dfa.negate();
-      stringsIndex = 1;
-      if (args.length == 1) {
-        System.err.println("Usage: [-negate] <string> [strings...]");
-        return;
-      }
-    }
-    for (int i = stringsIndex;i < args.length;i++) {
+    for (int i = 0; i < args.length; i++) {
       try {
         System.out.println(args[i] + " -> " + dfa.test(args[i]));
       } catch (IllegalArgumentException e) {

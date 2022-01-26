@@ -13,24 +13,24 @@ import static java.lang.Character.isLowerCase;
  * possono essere accettati: per esempio, la stringa "123456De Gasperi" deve essere accettato.
  * Modificare l’implementazione Java dell’automa di conseguenza.
  */
-public class DFA4 extends DeterministicFiniteAutomaton<Integer> {
+public class DFA4 extends DeterministicFiniteAutomaton {
   @Override
   public boolean isInAlphabet(char c) {
     return isLetter(c) || isDigit(c) || c == ' ';
   }
   
   @Override
-  public Integer initialState() {
+  public int initialState() {
     return 0;
   }
   
   @Override
-  public boolean isFinalState(Integer state) {
+  public boolean isFinalState(int state) {
     return state >= 5;
   }
   
   @Override
-  public Integer transit(Integer state, char c) {
+  public int transit(int state, char c) {
     switch (state) {
       case 0:
         switch (c) {
