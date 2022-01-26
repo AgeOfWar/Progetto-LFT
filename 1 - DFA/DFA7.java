@@ -19,7 +19,7 @@ public class DFA7 extends DeterministicFiniteAutomaton<Integer> {
   
   @Override
   public boolean isFinalState(Integer state) {
-    return state == 10;
+    return state == 9;
   }
   
   @Override

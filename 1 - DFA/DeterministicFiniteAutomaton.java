@@ -5,11 +5,11 @@ public abstract class DeterministicFiniteAutomaton<S> {
   public abstract S transit(S state, char c);
   
   public S transit(S state, String string) {
-    if (string.isEmpty()) {
+    if (string.isEmpty()) { // δ^(q, ε) = q
       return state;
     }
     
-    String w = string.substring(0, string.length() - 1);
+    String w = string.substring(0, string.length() - 1); // δ^(q, wa) = δ(δ^(q, w), a)
     char a = string.charAt(string.length() - 1);
     if (!isInAlphabet(a)) {
       throw new IllegalArgumentException("character '" + a + "' is not in the alphabet");
