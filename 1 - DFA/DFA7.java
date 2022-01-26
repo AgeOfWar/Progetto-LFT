@@ -7,12 +7,6 @@
  * "Eva", "Perro", "Pietro" oppure "P*o*o".
  */
 public class DFA7 extends DeterministicFiniteAutomaton<Integer> {
-  private final String name;
-  
-  public DFA7(String name) {
-    this.name = name;
-  }
-  
   @Override
   public boolean isInAlphabet(char c) {
     return true;
@@ -25,23 +19,39 @@ public class DFA7 extends DeterministicFiniteAutomaton<Integer> {
   
   @Override
   public boolean isFinalState(Integer state) {
-    return state == name.length() * 2;
+    return state == 10;
   }
   
   @Override
   public Integer transit(Integer state, char c) {
-    if (state < -1 || state > name.length() * 2) throw new IllegalStateException("Illegal state '" + state + "'");
-    if (state == -1 || state == name.length() * 2) return -1;
-    if (c == name.charAt(state % name.length())) {
-      return state == name.length() -1 ? state + 1 + name.length() : state + 1;
-    } else if (state < name.length()) {
-      return state + 1 + name.length();
-    } else {
-      return -1;
+    switch (state) {
+      case 0:
+        return c == 'M' ? 1 : 5;
+      case 1:
+        return c == 'i' ? 2 : 6;
+      case 2:
+        return c == 'c' ? 3 : 7;
+      case 3:
+        return c == 'h' ? 4 : 8;
+      case 4:
+        return 9;
+      case 5:
+        return c == 'i' ? 6 : -1;
+      case 6:
+        return c == 'c' ? 7 : -1;
+      case 7:
+        return c == 'h' ? 8 : -1;
+      case 8:
+        return c == 'i' ? 9 : -1;
+      case 9:
+      case -1:
+        return -1;
+      default:
+        throw new IllegalStateException("Illegal state '" + state + "'");
     }
   }
   
   public static void main(String[] args) {
-    main(new DFA7("Michi"), args);
+    main(new DFA7(), args);
   }
 }
