@@ -7,51 +7,60 @@
  * Esempi di stringhe accettate: "/****&#47;", "/*a*a*&#47;", "/*a/**&#47;", "/**a///a/a**&#47;", "/**&#47;", "/*&#47;*&#47;"
  * Esempi di stringhe non accettate: "/*&#47;", "/**&#47;***&#47;"
  */
-public class DFA9 extends DeterministicFiniteAutomaton {
-  @Override
-  public boolean isInAlphabet(char c) {
-    return c == '/' || c == '*' || c == 'a';
-  }
-  
-  @Override
-  public int initialState() {
-    return 0;
-  }
-  
-  @Override
-  public boolean isFinalState(int state) {
+public class DFA9 {
+  public static boolean scan(String s) {
+    int state = 0;
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+
+      if (c != '/' && c != '*' && c != 'a') {
+        throw new IllegalArgumentException("character '" + c + "' is not in the alphabet");
+      }
+
+      switch (state) {
+        case 0:
+          state = c == '/' ? 1 : -1;
+          break;
+        case 1:
+          state = c == '*' ? 2 : -1;
+          break;
+        case 2:
+          state = c == '*' ? 3 : 2;
+          break;
+        case 3:
+          switch (c) {
+            case '/':
+              state = 4;
+              break;
+            case '*':
+              state = 3;
+              break;
+            case 'a':
+              state = 2;
+              break;
+          }
+          break;
+        case -1:
+        case 4:
+          state = -1;
+          break;
+      }
+    }
     return state == 4;
   }
   
-  @Override
-  public int transit(int state, char c) {
-    switch (state) {
-      case 0:
-        return c == '/' ? 1 : -1;
-      case 1:
-        return c == '*' ? 2 : -1;
-      case 2:
-        return c == '*' ? 3 : 2;
-      case 3:
-        switch (c) {
-          case '/':
-            return 4;
-          case '*':
-            return 3;
-          case 'a':
-            return 2;
-          default:
-            throw new AssertionError();
-        }
-      case -1:
-      case 4:
-        return -1;
-      default:
-        throw new IllegalStateException("Illegal state '" + state + "'");
-    }
-  }
-  
   public static void main(String[] args) {
-    main(new DFA9(), args);
+    if (args.length == 0) {
+      System.err.println("Usage: <string> [strings...]");
+      return;
+    }
+
+    for (int i = 0; i < args.length; i++) {
+      try {
+        System.out.println(args[i] + " -> " + scan(args[i]));
+      } catch (IllegalArgumentException e) {
+        System.out.println(args[i] + " -> false (" + e.getMessage() + ")");
+      }
+    }
   }
 }

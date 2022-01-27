@@ -10,39 +10,46 @@ import static java.lang.Character.isLetter;
  * "x_", "_5"
  * Esempi di stringhe non accettate: "5", "221B", "123", "9_to_5", "___"
  */
-public class DFA2 extends DeterministicFiniteAutomaton {
-  @Override
-  public boolean isInAlphabet(char c) {
-    return isJavaIdentifierPart(c);
-  }
-  
-  @Override
-  public int initialState() {
-    return 0;
-  }
-  
-  @Override
-  public boolean isFinalState(int state) {
+public class DFA2 {
+  public static boolean scan(String s) {
+    int state = 0;
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+
+      if (!isJavaIdentifierPart(c)) {
+        throw new IllegalArgumentException("character '" + c + "' is not in the alphabet");
+      }
+
+      switch (state) {
+        case 0:
+          state = c == '_' ? 1 : isLetter(c) ? 2 : -1;
+          break;
+        case 1:
+          state = c == '_' ? 1 : 2;
+          break;
+        case 2:
+          state = 2;
+          break;
+        case -1:
+          state = -1;
+          break;
+      }
+    }
     return state == 2;
   }
   
-  @Override
-  public int transit(int state, char c) {
-    switch (state) {
-      case 0:
-        return c == '_' ? 1 : isLetter(c) ? 2 : -1;
-      case 1:
-        return c == '_' ? 1 : 2;
-      case 2:
-        return 2;
-      case -1:
-        return -1;
-      default:
-        throw new IllegalStateException("Illegal state '" + state + "'");
-    }
-  }
-  
   public static void main(String[] args) {
-    main(new DFA2(), args);
+    if (args.length == 0) {
+      System.err.println("Usage: <string> [strings...]");
+      return;
+    }
+
+    for (int i = 0; i < args.length; i++) {
+      try {
+        System.out.println(args[i] + " -> " + scan(args[i]));
+      } catch (IllegalArgumentException e) {
+        System.out.println(args[i] + " -> false (" + e.getMessage() + ")");
+      }
+    }
   }
 }

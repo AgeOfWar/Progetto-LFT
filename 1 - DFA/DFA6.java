@@ -13,158 +13,191 @@ import static java.lang.Character.*;
  * Esempi di stringhe non accettate: "123456Bianchi", "654321Rossi", "5", "654322", "Rossi",
  * "2Bianchi"
  */
-public class DFA6 extends DeterministicFiniteAutomaton {
-  @Override
-  public boolean isInAlphabet(char c) {
-    return isLetter(c) || isDigit(c);
-  }
-  
-  @Override
-  public int initialState() {
-    return 0;
-  }
-  
-  @Override
-  public boolean isFinalState(int state) {
+public class DFA6 {
+  public static boolean scan(String s) {
+    int state = 0;
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+
+      if (!isLetter(c) && !isDigit(c)) {
+        throw new IllegalArgumentException("character '" + c + "' is not in the alphabet");
+      }
+
+      switch (state) {
+        case 0:
+          switch (c) {
+            case '0':
+            case '2':
+            case '4':
+            case '6':
+            case '8':
+              state = 1;
+              break;
+            case '1':
+            case '3':
+            case '5':
+            case '7':
+            case '9':
+              state = 2;
+              break;
+            default:
+              state = -1;
+              break;
+          }
+          break;
+        case 1:
+          switch (c) {
+            case '0':
+            case '2':
+            case '4':
+            case '6':
+            case '8':
+              state = 3;
+              break;
+            case '1':
+            case '3':
+            case '5':
+            case '7':
+            case '9':
+              state = 4;
+              break;
+            default:
+              state = -1;
+              break;
+          }
+          break;
+        case 2:
+          switch (c) {
+            case '0':
+            case '2':
+            case '4':
+            case '6':
+            case '8':
+              state = 5;
+              break;
+            case '1':
+            case '3':
+            case '5':
+            case '7':
+            case '9':
+              state = 6;
+              break;
+            default:
+              state = -1;
+              break;
+          }
+          break;
+        case 3:
+          if (c >= 'A' && c <= 'K') state = 7;
+          switch (c) {
+            case '0':
+            case '2':
+            case '4':
+            case '6':
+            case '8':
+              state = 3;
+              break;
+            case '1':
+            case '3':
+            case '5':
+            case '7':
+            case '9':
+              state = 4;
+              break;
+            default:
+              state = -1;
+              break;
+          }
+          break;
+        case 4:
+          if (c >= 'A' && c <= 'K') state = 7;
+          switch (c) {
+            case '0':
+            case '2':
+            case '4':
+            case '6':
+            case '8':
+              state = 5;
+              break;
+            case '1':
+            case '3':
+            case '5':
+            case '7':
+            case '9':
+              state = 6;
+              break;
+            default:
+              state = -1;
+              break;
+          }
+          break;
+        case 5:
+          if (c >= 'L' && c <= 'Z') state = 7;
+          switch (c) {
+            case '0':
+            case '2':
+            case '4':
+            case '6':
+            case '8':
+              state = 3;
+              break;
+            case '1':
+            case '3':
+            case '5':
+            case '7':
+            case '9':
+              state = 4;
+              break;
+            default:
+              state = -1;
+              break;
+          }
+          break;
+        case 6:
+          if (c >= 'L' && c <= 'Z') state = 7;
+          switch (c) {
+            case '0':
+            case '2':
+            case '4':
+            case '6':
+            case '8':
+              state = 5;
+              break;
+            case '1':
+            case '3':
+            case '5':
+            case '7':
+            case '9':
+              state = 6;
+              break;
+            default:
+              state = -1;
+              break;
+          }
+          break;
+        case 7:
+          state = isLowerCase(c) ? 7 : -1;
+          break;
+        case -1:
+          state = -1;
+          break;
+      }
+    }
     return state == 7;
   }
   
-  @Override
-  public int transit(int state, char c) {
-    switch (state) {
-      case 0:
-        switch (c) {
-          case '0':
-          case '2':
-          case '4':
-          case '6':
-          case '8':
-            return 1;
-          case '1':
-          case '3':
-          case '5':
-          case '7':
-          case '9':
-            return 2;
-          default:
-            return -1;
-        }
-      case 1:
-        switch (c) {
-          case '0':
-          case '2':
-          case '4':
-          case '6':
-          case '8':
-            return 3;
-          case '1':
-          case '3':
-          case '5':
-          case '7':
-          case '9':
-            return 4;
-          default:
-            return -1;
-        }
-      case 2:
-        switch (c) {
-          case '0':
-          case '2':
-          case '4':
-          case '6':
-          case '8':
-            return 5;
-          case '1':
-          case '3':
-          case '5':
-          case '7':
-          case '9':
-            return 6;
-          default:
-            return -1;
-        }
-      case 3:
-        if (c >= 'A' && c <= 'K') return 7;
-        switch (c) {
-          case '0':
-          case '2':
-          case '4':
-          case '6':
-          case '8':
-            return 3;
-          case '1':
-          case '3':
-          case '5':
-          case '7':
-          case '9':
-            return 4;
-          default:
-            return -1;
-        }
-      case 4:
-        if (c >= 'A' && c <= 'K') return 7;
-        switch (c) {
-          case '0':
-          case '2':
-          case '4':
-          case '6':
-          case '8':
-            return 5;
-          case '1':
-          case '3':
-          case '5':
-          case '7':
-          case '9':
-            return 6;
-          default:
-            return -1;
-        }
-      case 5:
-        if (c >= 'L' && c <= 'Z') return 7;
-        switch (c) {
-          case '0':
-          case '2':
-          case '4':
-          case '6':
-          case '8':
-            return 3;
-          case '1':
-          case '3':
-          case '5':
-          case '7':
-          case '9':
-            return 4;
-          default:
-            return -1;
-        }
-      case 6:
-        if (c >= 'L' && c <= 'Z') return 7;
-        switch (c) {
-          case '0':
-          case '2':
-          case '4':
-          case '6':
-          case '8':
-            return 5;
-          case '1':
-          case '3':
-          case '5':
-          case '7':
-          case '9':
-            return 6;
-          default:
-            return -1;
-        }
-      case 7:
-        return isLowerCase(c) ? 7 : -1;
-      case -1:
-        return -1;
-      default:
-        throw new IllegalStateException("Illegal state '" + state + "'");
-    }
-  }
-  
   public static void main(String[] args) {
-    main(new DFA6(), args);
+    if (args.length == 0) {
+      System.err.println("Usage: <string> [strings...]");
+      return;
+    }
+
+    for (int i = 0; i < args.length; i++) {
+      try {
+        System.out.println(args[i] + " -> " + scan(args[i]));
+      } catch (IllegalArgumentException e) {
+        System.out.println(args[i] + " -> false (" + e.getMessage() + ")");
+      }
+    }
   }
 }

@@ -8,48 +8,56 @@
  * sequenza *&#47;.Le stringhe del linguaggio possono non avere nessuna occorrenza della sequenza
  * &#47;* (caso della sequenza di simboli senza commenti). Implementare l’automa seguendo la costruzione vista in Listing 1.
  */
-public class DFA10 extends DeterministicFiniteAutomaton {
-  @Override
-  public boolean isInAlphabet(char c) {
-    return c == '/' || c == '*' || c == 'a';
-  }
-  
-  @Override
-  public int initialState() {
-    return 0;
-  }
-  
-  @Override
-  public boolean isFinalState(int state) {
+public class DFA10 {
+  public static boolean scan(String s) {
+    int state = 0;
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+
+      if (c != '/' && c != '*' && c != 'a') {
+        throw new IllegalArgumentException("character '" + c + "' is not in the alphabet");
+      }
+
+      switch (state) {
+        case 0:
+          state = c == '/' ? 1 : 0;
+          break;
+        case 1:
+          state = c == '*' ? 2 : c == '/' ? 1 : 0;
+          break;
+        case 2:
+          state = c == '*' ? 3 : 2;
+          break;
+        case 3:
+          switch (c) {
+            case '/':
+              state = 0;
+              break;
+            case '*':
+              state = 3;
+              break;
+            case 'a':
+              state = 2;
+              break;
+          }
+          break;
+      }
+    }
     return state <= 1;
   }
   
-  @Override
-  public int transit(int state, char c) {
-    switch (state) {
-      case 0:
-        return c == '/' ? 1 : 0;
-      case 1:
-        return c == '*' ? 2 : c == '/' ? 1 : 0;
-      case 2:
-        return c == '*' ? 3 : 2;
-      case 3:
-        switch (c) {
-          case '/':
-            return 0;
-          case '*':
-            return 3;
-          case 'a':
-            return 2;
-          default:
-            throw new AssertionError();
-        }
-      default:
-        throw new IllegalStateException("Illegal state '" + state + "'");
-    }
-  }
-  
   public static void main(String[] args) {
-    main(new DFA10(), args);
+    if (args.length == 0) {
+      System.err.println("Usage: <string> [strings...]");
+      return;
+    }
+
+    for (int i = 0; i < args.length; i++) {
+      try {
+        System.out.println(args[i] + " -> " + scan(args[i]));
+      } catch (IllegalArgumentException e) {
+        System.out.println(args[i] + " -> false (" + e.getMessage() + ")");
+      }
+    }
   }
 }

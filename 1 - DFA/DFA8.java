@@ -18,55 +18,67 @@ import static java.lang.Character.isDigit;
  * "-.7e2", "1e2.3"
  * Esempi di stringhe non accettate: ".", "e3", "123.", "+e6", "1.2.3", "4e5e6", "++3"
  */
-public class DFA8 extends DeterministicFiniteAutomaton {
-  @Override
-  public boolean isInAlphabet(char c) {
-    return isDigit(c) || isSign(c) || c == '.' || c == 'e';
-  }
-  
-  @Override
-  public int initialState() {
-    return 0;
-  }
-  
-  @Override
-  public boolean isFinalState(int state) {
-    return state == 2 || state == 4 || state == 7 || state == 9;
-  }
-  
-  @Override
-  public int transit(int state, char c) {
-    switch (state) {
-      case 0:
-        return isSign(c) ? 1 : isDigit(c) ? 2 : c == '.' ? 3 : -1;
-      case 1:
-        return isDigit(c) ? 2 : c == '.' ? 3 : -1;
-      case 2:
-        return isDigit(c) ? 2 : c == '.' ? 3 : c == 'e' ? 5 : -1;
-      case 3:
-        return isDigit(c) ? 4 : -1;
-      case 4:
-        return isDigit(c) ? 4 : c == 'e' ? 5 : -1;
-      case 5:
-        return isSign(c) ? 6 : isDigit(c) ? 7 : c == '.' ? 8 : -1;
-      case 6:
-      case 7:
-        return isDigit(c) ? 7 : c == '.' ? 8 : -1;
-      case 8:
-      case 9:
-        return isDigit(c) ? 9 : -1;
-      case -1:
-        return -1;
-      default:
-        throw new IllegalStateException("Illegal state '" + state + "'");
-    }
-  }
-  
-  private boolean isSign(char c) {
+public class DFA8 {
+  private static boolean isSign(char c) {
     return c == '+' || c == '-';
   }
   
+  public static boolean scan(String s) {
+    int state = 0;
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+
+      if (!isDigit(c) && !isSign(c) && c != '.' && c != 'e') {
+        throw new IllegalArgumentException("character '" + c + "' is not in the alphabet");
+      }
+
+      switch (state) {
+        case 0:
+          state = isSign(c) ? 1 : isDigit(c) ? 2 : c == '.' ? 3 : -1;
+          break;
+        case 1:
+          state = isDigit(c) ? 2 : c == '.' ? 3 : -1;
+          break;
+        case 2:
+          state = isDigit(c) ? 2 : c == '.' ? 3 : c == 'e' ? 5 : -1;
+          break;
+        case 3:
+          state = isDigit(c) ? 4 : -1;
+          break;
+        case 4:
+          state = isDigit(c) ? 4 : c == 'e' ? 5 : -1;
+          break;
+        case 5:
+          state = isSign(c) ? 6 : isDigit(c) ? 7 : c == '.' ? 8 : -1;
+          break;
+        case 6:
+        case 7:
+          state = isDigit(c) ? 7 : c == '.' ? 8 : -1;
+          break;
+        case 8:
+        case 9:
+          state = isDigit(c) ? 9 : -1;
+          break;
+        case -1:
+          state = -1;
+          break;
+      }
+    }
+    return state == 2 || state == 4 || state == 7 || state == 9;
+  }
+  
   public static void main(String[] args) {
-    main(new DFA8(), args);
+    if (args.length == 0) {
+      System.err.println("Usage: <string> [strings...]");
+      return;
+    }
+
+    for (int i = 0; i < args.length; i++) {
+      try {
+        System.out.println(args[i] + " -> " + scan(args[i]));
+      } catch (IllegalArgumentException e) {
+        System.out.println(args[i] + " -> false (" + e.getMessage() + ")");
+      }
+    }
   }
 }
