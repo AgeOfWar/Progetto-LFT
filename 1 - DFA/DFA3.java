@@ -47,7 +47,7 @@ public class DFA3 {
           }
           break;
         case 1:
-          if (c >= 'A' && c <= 'K') state = 3;
+          if (c >= 'A' && c <= 'K') state = 3; else
           switch (c) {
             case '0':
             case '2':
@@ -69,7 +69,7 @@ public class DFA3 {
           }
           break;
         case 2:
-          if (c >= 'L' && c <= 'Z') state = 3;
+          if (c >= 'L' && c <= 'Z') state = 3; else
           switch (c) {
             case '0':
             case '2':

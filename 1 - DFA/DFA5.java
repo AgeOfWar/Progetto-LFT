@@ -1,5 +1,12 @@
 import static java.lang.Character.*;
 
+/*
+ * Progettare e implementare un DFA che, come in Esercizio 1.3, riconosca il linguaggio di
+ * stringhe che contengono matricola e cognome degli studenti del corso A che hanno un
+ * numero di matricola pari oppure a studenti del corso B che hanno un numero di matricola
+ * dispari, ma in cui il cognome precede il numero di matricola (in altre parole, le posizioni
+ * del cognome e matricola sono scambiate rispetto all’Esercizio 1.3).
+ */
 public class DFA5 {
   public static boolean scan(String s) {
     int state = 0;
@@ -15,7 +22,7 @@ public class DFA5 {
           state = c >= 'A' && c <= 'K' ? 1 : c >= 'L' && c <= 'Z' ? 2 : -1;
           break;
         case 1:
-          if (isLowerCase(c)) state = 1;
+          if (isLowerCase(c)) state = 1; else
           switch (c) {
             case '0':
             case '2':
@@ -37,7 +44,7 @@ public class DFA5 {
           }
           break;
         case 2:
-          if (isLowerCase(c)) state = 2;
+          if (isLowerCase(c)) state = 2; else
           switch (c) {
             case '0':
             case '2':

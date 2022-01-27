@@ -1,7 +1,7 @@
 /**
  * Progettare e implementare un DFA con alfabeto {/, *, a} che riconosca il linguaggio di "commenti" delimitati da
  * /* (all’inizio) e *&#47; (alla fine):cioe l’automa deve accettare le
- * stringhe che contengono almeno 4caratteri che iniziano con /*, che finiscono con *&#47;,
+ * stringhe che contengono almeno 4 caratteri che iniziano con /*, che finiscono con *&#47;,
  * e che contengono una sola occorrenza della sequenza*&#47;,quella finale(dove l’asterisco della sequenza*&#47;
  * non deve essere in comune con quello della sequenza /* all’inizio).
  * Esempi di stringhe accettate: "/****&#47;", "/*a*a*&#47;", "/*a/**&#47;", "/**a///a/a**&#47;", "/**&#47;", "/*&#47;*&#47;"

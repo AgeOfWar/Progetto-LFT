@@ -88,7 +88,7 @@ public class DFA6 {
           }
           break;
         case 3:
-          if (c >= 'A' && c <= 'K') state = 7;
+          if (c >= 'A' && c <= 'K') state = 7; else
           switch (c) {
             case '0':
             case '2':
@@ -110,7 +110,7 @@ public class DFA6 {
           }
           break;
         case 4:
-          if (c >= 'A' && c <= 'K') state = 7;
+          if (c >= 'A' && c <= 'K') state = 7; else
           switch (c) {
             case '0':
             case '2':
@@ -132,7 +132,7 @@ public class DFA6 {
           }
           break;
         case 5:
-          if (c >= 'L' && c <= 'Z') state = 7;
+          if (c >= 'L' && c <= 'Z') state = 7; else
           switch (c) {
             case '0':
             case '2':
@@ -154,7 +154,7 @@ public class DFA6 {
           }
           break;
         case 6:
-          if (c >= 'L' && c <= 'Z') state = 7;
+          if (c >= 'L' && c <= 'Z') state = 7; else
           switch (c) {
             case '0':
             case '2':
