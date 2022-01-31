@@ -6,6 +6,5 @@ public class NumberTok extends Token {
     this.value = value;
   }
   
-  //public String toString() { return "<" + tag + ", " + value + ">"; }
-  public String toString() { return "<" + Tag.toString(tag) + ", " + value + ">"; }
+  public String toString() { return "<" + tag + ", " + value + ">"; }
 }
