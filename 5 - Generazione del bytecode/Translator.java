@@ -29,7 +29,7 @@ public class Translator {
   void match(int t) {
     if (look.tag == t) {
       if (look.tag != Tag.EOF) move();
-    } else error("expected " + Tag.toString(t));
+    } else error("expected " + t);
   }
   
   public void start() {
